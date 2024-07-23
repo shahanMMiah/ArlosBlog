@@ -1,12 +1,12 @@
 class TextNode():
-    def __init__(text,text_type,url):
-        self.text = text
-        self.text_type = text_type
-        self.url = url
+    def __init__(self, text, text_type, url):
+        self.text = text or ""
+        self.text_type = text_type or ""
+        self.url = url or ""
     
     def __eq__(self, textNode):
         return(
-                self.text == textNode.text and
+                self.text == textNode.text and 
                 self.text_type == textNode.text_type and
                 self.url == textNode.url
                 )
