@@ -8,7 +8,6 @@ class LeafNode(HTMLNode):
             tag=tag,
             props=props
 
-            
         )
         if not self.value:
             raise ValueError("value is required")
@@ -21,13 +20,13 @@ class LeafNode(HTMLNode):
         if not self.tag:
             return(str(self.value))
         
-        html_str =  f"<{self.tag}>"
+        html_str = self.start_tag
         if self.props:
             print(f"props are {self.props}")
            
             for key,val in self.props.items():
                 html_str= html_str.replace('>', f' {key}="{val}">')
         
-        html_str += f"{self.value}</{self.tag}>"
+        html_str += f"{self.value}{self.end_tag}"
 
         return (html_str)

@@ -6,8 +6,22 @@ class HTMLNode():
         self.children = children
         self.props = props
 
-        self.tag_dict = {
-            "p":"p>", "a":"a "}
+    @property
+    def start_tag(self):
+        start_tag  = f"<{self.tag}>"
+        if self.props and isinstance(self.props, dict):
+            map(
+                lambda tup, str = start_tag : str.replace(
+                    '>', 
+                    f' {tup[0]}="{tup[1]}">'),
+                self.props.items()
+                )
+            
+        return(start_tag)
+    
+    @property
+    def end_tag(self):
+        return(f"</{self.tag}>")
 
     def to_html(self):
         raise NotImplementedError()
