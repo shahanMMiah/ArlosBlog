@@ -1,8 +1,8 @@
 import unittest
 import logging
 
-from leafnode import LeafNode
-from parentnode import ParentNode
+from src.leafnode import LeafNode
+from src.parentnode import ParentNode
 
 
 LOG = logging.getLogger(__name__)
