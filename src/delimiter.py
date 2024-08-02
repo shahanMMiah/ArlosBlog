@@ -4,7 +4,7 @@ def split_nodes_delimiter(old_nodes: textnode.TextNode,delimiter: str,text_type:
     textNodes = []
     for old_node in old_nodes:
         if old_node.text_type != textnode.TextTypes.text_type_text.value:
-            text_type.append(textNodes)
+            textNodes.append(old_node)
         
         else:
             delim_position = 0
@@ -38,11 +38,8 @@ def split_nodes_delimiter(old_nodes: textnode.TextNode,delimiter: str,text_type:
             if delims_found < 2 or delims_found % 2 != 0:
                 raise RuntimeError("no closing delimiter amount")
             
-            return(textNodes)
+    return(textNodes)
 
 
-node = textnode.TextNode("This is text with a `code block` word", textnode.TextTypes.text_type_text.value, None)
-new_nodes = split_nodes_delimiter([node], "`", textnode.TextTypes.text_type_code.value)
 
-print(new_nodes)
     
