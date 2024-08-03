@@ -27,7 +27,7 @@ class TestTextNode(unittest.TestCase):
         self.assertIsNotNone(node1.text)
         self.assertIsNotNone(node1.text_type)
         self.assertIsNotNone(node1.url)
-        print(node1)
+
     def test_text_to_html(self):
         
         node1 = TextNode("testing node", "bold","www.test.com") 

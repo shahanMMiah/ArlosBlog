@@ -22,7 +22,6 @@ class LeafNode(HTMLNode):
         
         html_str = self.start_tag
         if self.props:
-            print(f"props are {self.props}")
            
             for key,val in self.props.items():
                 html_str= html_str.replace('>', f' {key}="{val}">')
