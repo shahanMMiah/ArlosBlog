@@ -23,11 +23,9 @@ def extract_markdown_element(text:str):
 def extract_markdown_images(text : str):
 
     def check_func(alts, urls):
-        if not alts or not urls:
-            raise ValueError("alt text or urls not found")
+        if not alts or not urls or len(alts) != len(urls):
+            return None
 
-        if len(alts) != len(urls):
-            raise RuntimeError("mismatch of urls and alt text found")
 
     pattern_finder, extracter = extract_markdown_element(text)
     elements = pattern_finder([r"!+\[(.*?)\]",r"\((.*?)\)"])
@@ -37,12 +35,27 @@ def extract_markdown_images(text : str):
 def extract_markdown_links(text: str):
 
     def check_func(alts, urls):
-        if not alts or not urls:
-            raise ValueError("anchor text or urls not found")
-
-        if len(alts) != len(urls):
-            raise RuntimeError("mismatch of urls and anchor text found")
+        if not alts or not urls or len(alts) != len(urls):
+            return None
 
     pattern_finder, extracter = extract_markdown_element(text)
     elements = pattern_finder([r"\[(.*?)\]",r"\((.*?)\)"])
     return(extracter(check_func, elements))
+
+
+def markdown_to_blocks(markdown : str):
+
+    splits = markdown.split("\n")
+    sentences = []
+    current_sentence = str()
+    for num, sentence in enumerate(splits):
+        
+        if not sentence and current_sentence or num == len(splits)-1:
+            sentences.append(current_sentence)
+            current_sentence = str()
+        else:
+            add_sent = sentence.lstrip(' ').rstrip(' ')
+            if len(current_sentence) > 0:
+                add_sent = f"\n{add_sent}"
+            current_sentence += add_sent
+    return(sentences)

@@ -73,9 +73,113 @@ class TestDelimiter(unittest.TestCase):
         
         self.assertEqual(delimit_nodes, should_be) 
 
+    def test_start_end_delimits(self):
+        start_node = textnode.TextNode(
+            "*this should have * a start code block",textnode.TextTypes.text_type_text.value,None)
+        
+        end_node = textnode.TextNode(
+            " this should have a *end code block*",textnode.TextTypes.text_type_text.value,None)
+        
+        start_delimit = delimiter.split_nodes_delimiter([start_node], "*",textnode.TextTypes.text_type_code.value)
+        end_delimit = delimiter.split_nodes_delimiter([end_node], "*",textnode.TextTypes.text_type_code.value)
 
+        start_should_be = [
+            textnode.TextNode(
+            "this should have ",textnode.TextTypes.text_type_code.value,None),
+            textnode.TextNode(
+            " a start code block",textnode.TextTypes.text_type_text.value,None),
+        ]
+
+        end_should_be = [
+            textnode.TextNode(
+            " this should have a ",textnode.TextTypes.text_type_text.value,None),
+            textnode.TextNode(
+            "end code block",textnode.TextTypes.text_type_code.value,None),
+        ]
+
+        LOG.info(f"testing delimets at start {start_delimit} and end {end_delimit}")
+        self.assertEqual(start_delimit, start_should_be)
+        self.assertEqual(end_delimit, end_should_be)
         
     
+    def test_split_nodes_links(self):
+        
+
+        node = textnode.TextNode("[to boot dev](https://www.boot.dev) This is text with a link and [to youtube](https://www.youtube.com/@bootdotdev) huh",
+        textnode.TextTypes.text_type_text.value, None)
+        
+        new_nodes = delimiter.split_nodes_links([node])
+
+        should_be = [
+            textnode.TextNode("to boot dev", textnode.TextTypes.text_type_link.value, "https://www.boot.dev"),
+            textnode.TextNode(" This is text with a link and ", textnode.TextTypes.text_type_text.value,None),
+            textnode.TextNode("to youtube", textnode.TextTypes.text_type_link.value, "https://www.youtube.com/@bootdotdev"),
+            textnode.TextNode(" huh", textnode.TextTypes.text_type_text.value,None)
+        ]       
+        LOG.info(f"new_nodes is {new_nodes}")
+        self.assertEqual(new_nodes, should_be)
+
+        node2 = textnode.TextNode("[to boot dev](https://www.boot.dev) This is text [with a middle link](https://www.middlelink.com) a link and [to youtube](https://www.youtube.com/@bootdotdev) huh",
+        textnode.TextTypes.text_type_text.value, None)
+        should_be_2 = [
+            textnode.TextNode("to boot dev", textnode.TextTypes.text_type_link.value, "https://www.boot.dev"),
+            textnode.TextNode(" This is text ", textnode.TextTypes.text_type_text.value,None),
+            textnode.TextNode("with a middle link", textnode.TextTypes.text_type_link.value, "https://www.middlelink.com"),
+            textnode.TextNode(" a link and ", textnode.TextTypes.text_type_text.value,None),
+            textnode.TextNode("to youtube", textnode.TextTypes.text_type_link.value, "https://www.youtube.com/@bootdotdev"),
+            textnode.TextNode(" huh", textnode.TextTypes.text_type_text.value,None)
+        ]  
+        
+        new_nodes2 = delimiter.split_nodes_links([node2])
+
+        self.assertEqual(new_nodes2, should_be_2)
+
+    
+    def test_split_images(self):
+        
+        img_node = textnode.TextNode(
+            "This is a with image and ![image anchor](image_urls/images)",textnode.TextTypes.text_type_text.value,None)
+        
+        new_img_node = delimiter.split_nodes_images([img_node])
+        img_test = [
+            textnode.TextNode("This is a with image and ", textnode.TextTypes.text_type_text.value, None),
+            textnode.TextNode("image anchor",  textnode.TextTypes.text_type_image.value, "image_urls/images")
+            ]
+        self.assertEqual(new_img_node,img_test)
+        
+        img_node_2 = textnode.TextNode("![boot img](https://www.boot.dev/img) This is a image and ![youtube logo](https://www.youtube.com/logo)",
+        textnode.TextTypes.text_type_text.value, None)
+        
+        img_new_node_2 = delimiter.split_nodes_images([img_node_2])
+
+        should_be_2 = [
+            textnode.TextNode("boot img", textnode.TextTypes.text_type_image.value, "https://www.boot.dev/img"),
+            textnode.TextNode(" This is a image and ", textnode.TextTypes.text_type_text.value,None),
+            textnode.TextNode("youtube logo", textnode.TextTypes.text_type_image.value, "https://www.youtube.com/logo"),
+        ]       
+        LOG.info(f"img list is {img_new_node_2}")   
+        self.assertEqual(img_new_node_2, should_be_2)
+
+    def test_text_to_textnodes(self):
+        text_str = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        
+        text_nodes = delimiter.text_to_textnode(text_str)
+        
+        should_be = [
+            textnode.TextNode("This is ", textnode.TextTypes.text_type_text.value,None),
+            textnode.TextNode("text", textnode.TextTypes.text_type_bold.value,None),
+            textnode.TextNode(" with an ", textnode.TextTypes.text_type_text.value,None),
+            textnode.TextNode("italic", textnode.TextTypes.text_type_italic.value,None),
+            textnode.TextNode(" word and a ", textnode.TextTypes.text_type_text.value,None),
+            textnode.TextNode("code block", textnode.TextTypes.text_type_code.value,None),
+            textnode.TextNode(" and an ", textnode.TextTypes.text_type_text.value,None),
+            textnode.TextNode("obi wan image", textnode.TextTypes.text_type_image.value, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            textnode.TextNode(" and a ", textnode.TextTypes.text_type_text.value,None),
+            textnode.TextNode("link", textnode.TextTypes.text_type_link.value, "https://boot.dev"),
+        ]
+        LOG.info(f"text to textnodes is {text_nodes}") 
+        self.assertEqual(text_nodes, should_be)
+
 
 if __name__ == "__main__":
     unittest.main()

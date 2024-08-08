@@ -50,9 +50,6 @@ class TestTextNode(unittest.TestCase):
         hmtl_node4 = textnode.text_to_html_node(node4)
         LOG.info(f"{node4} is converted to {hmtl_node4.to_html()}")
         self.assertIsInstance(hmtl_node4, LeafNode)
-
-
-    
         
 if __name__ == "__main__":
     unittest.main()

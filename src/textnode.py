@@ -1,6 +1,9 @@
 from .leafnode import LeafNode
 from enum import Enum
 
+from . import delimiter
+from . import markdown_utils
+
 class TextTypes(Enum):
     text_type_text = "text"
     text_type_bold = "bold"
@@ -9,7 +12,7 @@ class TextTypes(Enum):
     text_type_link = "link"
     text_type_image = "image"
 
-    
+
 
 class TextNode():
     def __init__(self, text, text_type, url):
@@ -74,3 +77,6 @@ def text_to_html_node(text_node):
                     }))
         case _:
             raise Exception("type not reconised")
+
+
+   

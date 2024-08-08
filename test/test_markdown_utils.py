@@ -23,18 +23,26 @@ class TestMarkdownUtils(unittest.TestCase):
 
         self.assertEqual(extracted_links, should_be)
 
-    def test_no_found_match(self):
-        link_test = "This is text with a link [to boot dev] this should break"
+    def test_markdown_to_block(self):
 
-        with self.assertRaises(ValueError):
-            mk_utils.extract_markdown_links(link_test)
+        test_str =  """# This is a heading
 
-    def test_mismatch_url_found(self):
-        link_test = "This is text with a link [to boot dev] [this is too many anchors](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
+        This is a paragraph of text. It has some **bold** and *italic* words inside of it.
 
-        with self.assertRaises(RuntimeError):
-            mk_utils.extract_markdown_links(link_test)
-        
+        * This is the first list item in a list block
+        * This is a list item
+        * This is another list item
+        """
+
+        blocks = mk_utils.markdown_to_blocks(test_str)
+
+        should_be  = ["# This is a heading",
+                      "This is a paragraph of text. It has some **bold** and *italic* words inside of it.",
+                      "* This is the first list item in a list block\n* This is a list item\n* This is another list item"
+                    ]
+        print(blocks)
+        self.assertEqual(blocks,should_be)
+
 
 if __name__ == "__main__":
     unittest.main()
