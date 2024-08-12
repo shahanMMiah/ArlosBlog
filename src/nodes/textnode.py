@@ -1,8 +1,5 @@
-from .leafnode import LeafNode
 from enum import Enum
-
-from . import delimiter
-from . import markdown_utils
+from .leafnode import LeafNode
 
 class TextTypes(Enum):
     text_type_text = "text"
@@ -12,8 +9,7 @@ class TextTypes(Enum):
     text_type_link = "link"
     text_type_image = "image"
 
-
-
+    
 class TextNode():
     def __init__(self, text, text_type, url):
         self.text = text or ""

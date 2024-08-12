@@ -1,5 +1,48 @@
-from . import textnode
-from . import markdown_utils
+from ..nodes import textnode
+import re
+
+
+def extract_markdown_element(text:str):
+    
+    def find_patterns(re_patterns : list):
+        return(
+            list(map(
+                lambda pattern, text = text : re.findall(
+                    pattern, text), re_patterns)
+                    )
+            )
+ 
+    def extract_element(check_func, elements):
+        
+        check_func(elements[0],elements[1])
+       
+        return(
+            list( map(lambda num, e=elements : (e[0][num],e[1][num]), range(len(elements[0]))))
+        )
+        
+    return(find_patterns,extract_element)
+
+def extract_markdown_images(text : str):
+
+    def check_func(alts, urls):
+        if not alts or not urls or len(alts) != len(urls):
+            return None
+
+
+    pattern_finder, extracter = extract_markdown_element(text)
+    elements = pattern_finder([r"!+\[(.*?)\]",r"\((.*?)\)"])
+    return(extracter(check_func, elements))
+
+    
+def extract_markdown_links(text: str):
+
+    def check_func(alts, urls):
+        if not alts or not urls or len(alts) != len(urls):
+            return None
+
+    pattern_finder, extracter = extract_markdown_element(text)
+    elements = pattern_finder([r"\[(.*?)\]",r"\((.*?)\)"])
+    return(extracter(check_func, elements))
 
 
 def split_nodes_delimiter(old_nodes: textnode.TextNode,delimiter: str,text_type: str):
@@ -38,43 +81,7 @@ def split_nodes_delimiter(old_nodes: textnode.TextNode,delimiter: str,text_type:
                             old_node.url,
                         )
                     )
-                """
-                delim_position = 0
-                delims_found = 0    
-                
-                for tNum, tChar in enumerate(old_node.text):
-                    node_type = textnode.TextTypes.text_type_text.value
-                    if tChar == delimiter:
-                        
-                        delims_found += 1
-                        
-                        if delims_found % 2 == 0:
-                            node_type = text_type
-                        
-                        new_text = textnode.TextNode(
-                                old_node.text[delim_position:tNum], 
-                                node_type, old_node.url)
-                        if len(new_text.text) > 1:
-                            textNodes.append(new_text)
-                        
-                    
-                        delim_position = tNum + 1
-                        
-                    if tNum == len(old_node.text)-1:
-                    
-                        end_text = textnode.TextNode(
-                                old_node.text[delim_position::], 
-                                node_type, old_node.url)
-                        
 
-                        if len(end_text.text) > 1:
-                            textNodes.append(end_text)
-
-                
-                if delims_found < 2 or delims_found % 2 != 0:
-                    raise RuntimeError("no closing delimiter amount")
-                """
-            
     return(textNodes)
 
 
@@ -140,7 +147,7 @@ def split_nodes_links(nodes):
     return(
         split_nodes_type(
             nodes, 
-            markdown_utils.extract_markdown_links, 
+            extract_markdown_links, 
             textnode.TextTypes.text_type_link.value,
             "[{}]({})"
             )
@@ -151,7 +158,7 @@ def split_nodes_images(nodes):
     return(
         split_nodes_type(
             nodes, 
-            markdown_utils.extract_markdown_images, 
+            extract_markdown_images, 
             textnode.TextTypes.text_type_image.value,
             "![{}]({})"
             )

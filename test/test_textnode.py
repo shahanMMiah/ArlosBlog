@@ -1,9 +1,9 @@
 import unittest
 import logging
 
-import src.textnode as textnode
-from src.textnode import TextNode
-from src.leafnode import LeafNode
+import src.nodes.textnode as textnode
+from src.nodes.textnode import TextNode
+from src.nodes.leafnode import LeafNode
 
 
 LOG = logging.getLogger(__name__)
