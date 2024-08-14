@@ -1,3 +1,4 @@
+from .. import datatypes
 from ..nodes import textnode
 import re
 
@@ -49,7 +50,7 @@ def split_nodes_delimiter(old_nodes: textnode.TextNode,delimiter: str,text_type:
         
     textNodes = []
     for old_node in old_nodes:
-        if old_node.text_type != textnode.TextTypes.text_type_text.value:
+        if old_node.text_type != datatypes.TextTypes.TEXT_NAME.value:
             textNodes.append(old_node)
         
         else:
@@ -77,14 +78,12 @@ def split_nodes_delimiter(old_nodes: textnode.TextNode,delimiter: str,text_type:
                     textNodes.append(
                         textnode.TextNode(
                             split,
-                            textnode.TextTypes.text_type_text.value,
+                            datatypes.TextTypes.TEXT_NAME.value,
                             old_node.url,
                         )
                     )
 
     return(textNodes)
-
-
 
 
 def split_nodes_type(nodes,extract_func, text_type,split_str):
@@ -106,7 +105,7 @@ def split_nodes_type(nodes,extract_func, text_type,split_str):
                     check_nodes.append(
                         textnode.TextNode(
                             split,
-                            textnode.TextTypes.text_type_text.value,
+                            datatypes.TextTypes.TEXT_NAME.value,
                             None,
                         )
                     )
@@ -124,7 +123,7 @@ def split_nodes_type(nodes,extract_func, text_type,split_str):
     split_nodes = []
 
     for old_node in nodes:
-        if old_node.text_type != textnode.TextTypes.text_type_text.value:
+        if old_node.text_type != datatypes.TextTypes.TEXT_NAME.value:
             split_nodes.append(old_node)
             continue
         
@@ -148,7 +147,7 @@ def split_nodes_links(nodes):
         split_nodes_type(
             nodes, 
             extract_markdown_links, 
-            textnode.TextTypes.text_type_link.value,
+            datatypes.TextTypes.LINK_NAME.value,
             "[{}]({})"
             )
         )
@@ -159,21 +158,25 @@ def split_nodes_images(nodes):
         split_nodes_type(
             nodes, 
             extract_markdown_images, 
-            textnode.TextTypes.text_type_image.value,
+            datatypes.TextTypes.IMAGE_NAME.value,
             "![{}]({})"
             )
         )
     
 def text_to_textnode(text : str):
     
-    text_chars = ["**","*","`",]
+    text_chars = [
+        datatypes.InlineTypes.BOLD.value,
+        datatypes.InlineTypes.ITALIC.value,
+        datatypes.InlineTypes.CODE.value
+    ]
     text_types = [
-        textnode.TextTypes.text_type_bold.value,
-        textnode.TextTypes.text_type_italic.value,
-        textnode.TextTypes.text_type_code.value,
+        datatypes.TextTypes.BOLD_NAME.value,
+        datatypes.TextTypes.ITALIC_NAME.value,
+        datatypes.TextTypes.CODE_NAME.value,
     ]
     
-    nodes = [textnode.TextNode(text,textnode.TextTypes.text_type_text.value,None)]
+    nodes = [textnode.TextNode(text,datatypes.TextTypes.TEXT_NAME.value,None)]
     for num, char in enumerate(text_chars):
     
         nodes = split_nodes_delimiter(nodes, char, text_types[num])

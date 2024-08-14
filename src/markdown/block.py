@@ -1,66 +1,54 @@
-from enum import Enum
+import functools
+from ..nodes import parentnode,leafnode,textnode
+from .. import datatypes
+from . import inline
 
-class BlockTypes(Enum):
-    HEADING = "#"
-    CODE = "```"
-    QOUTE = ">"
-    UNORDERED_LIST = ["*","-"]
-    ORDERED_LIST = "."
-       
-    HEADING_NAME = "heading"
-    CODE_NAME = "code"
-    QOUTE_NAME = "qoute"
-    UNORDERED_NAME = "unordered_list"
-    ORDERED_NAME = "ordered_list"
-    PARAGRAPH_NAME = "paragraph"
+    
+# check funcs
+def heading_check(block:str):
+    if block.startswith(datatypes.BlockTypes.HEADING.value):
+        hash_count = block.count(datatypes.BlockTypes.HEADING.value)
+        if hash_count > 0 and hash_count <= 6:
+            return(datatypes.BlockTypes.HEADING_NAME.value)
+        
+    return(block)
+  
+def code_check( block:str):
+    if block.startswith(f"{datatypes.BlockTypes.CODE.value} "):
+        return(datatypes.BlockTypes.CODE_NAME.value)
+    return(block)
 
-    @classmethod
-    def heading_check(self, block:str):
-        if block.startswith(BlockTypes.HEADING.value):
-            hash_count = block.count(BlockTypes.HEADING.value)
-            if hash_count > 0 and hash_count <= 6:
-                return(BlockTypes.HEADING_NAME.value)
-        
-        return(block)
-    @classmethod
-    def code_check(self, block:str):
-        if block.startswith(f"{BlockTypes.CODE.value} "):
-            return(BlockTypes.CODE_NAME.value)
-        return(block)
-    
-    @classmethod
-    def quote_check(self, block:str):
-        if block.startswith(f"{BlockTypes.QOUTE.value} "):
-            return(BlockTypes.QOUTE_NAME.value)
-        return(block)
-    
-    @classmethod
-    def unordered_list_check(self, block:str):
-        if block.startswith(
-            f"{BlockTypes.UNORDERED_LIST.value[0]} "):
-        
-            return(BlockTypes.UNORDERED_NAME.value)
-        
-        elif block.startswith(
-                f"{BlockTypes.UNORDERED_LIST.value[1]} "):
-            return(BlockTypes.UNORDERED_NAME.value)
-        else:
-            return(block)
-    
-    @classmethod
-    def ordered_list_check(self, block:str):
-        lines = block.split("\n")
-        ord_num = 0
-        
+def quote_check( block:str):
+    if block.startswith(f"{datatypes.BlockTypes.QOUTE.value} "):
+        return(datatypes.BlockTypes.QOUTE_NAME.value)
+    return(block)
 
-        for line in lines:
-            if line:
-                if line[0].isnumeric() and line[1] == "." and int(line[0]) == ord_num +1:
-                    ord_num += 1
-                else:
-                    return(block)
-                    
-        return(BlockTypes.ORDERED_NAME.value)
+
+def unordered_list_check(block:str):
+    if block.startswith(
+        f"{datatypes.BlockTypes.UNORDERED_LIST.value[0]} "):
+    
+        return(datatypes.BlockTypes.UNORDERED_NAME.value)
+    
+    elif block.startswith(
+            f"{datatypes.BlockTypes.UNORDERED_LIST.value[1]} "):
+        return(datatypes.BlockTypes.UNORDERED_NAME.value)
+    else:
+        return(block)
+  
+def ordered_list_check(block:str):
+    lines = block.split("\n")
+    ord_num = 0
+    
+
+    for line in lines:
+        if line:
+            if line[0].isnumeric() and line[1] == "." and int(line[0]) == ord_num +1:
+                ord_num += 1
+            else:
+                return(block)
+                
+    return(datatypes.BlockTypes.ORDERED_NAME.value)
         
 
 def markdown_to_blocks(markdown : str):
@@ -82,34 +70,149 @@ def markdown_to_blocks(markdown : str):
 
 def block_to_block_type(block : str):
 
-    type_ls = [BlockTypes.heading_check,
-               BlockTypes.code_check,
-               BlockTypes.quote_check,
-               BlockTypes.unordered_list_check,
-               BlockTypes.ordered_list_check,
+    type_ls = [heading_check,
+               code_check,
+               quote_check,
+               unordered_list_check,
+               ordered_list_check,
                ]
+    
     for type_func in type_ls:
+        
         checked_block = type_func(block)
-
+      
         if checked_block != block:
             return(checked_block)
             
-    return(BlockTypes.PARAGRAPH_NAME.value)
+    return(datatypes.BlockTypes.PARAGRAPH_NAME.value)
     
+
 
 def markdown_to_hmtl_node(markdown:str):
 
-    blocks = markdown_to_blocks(markdown)
+    block_func_dict = {
+        datatypes.BlockTypes.HEADING_NAME.value : block_to_heading_node,
+        datatypes.BlockTypes.UNORDERED_NAME.value : block_to_unordered_list_node,
+        datatypes.BlockTypes.ORDERED_NAME.value : block_to_ordered_list_node,
+        datatypes.BlockTypes.QOUTE_NAME.value : block_to_quoute_node,
+        datatypes.BlockTypes.CODE_NAME.value : block_to_code_node,
+        datatypes.BlockTypes.PARAGRAPH_NAME.value : block_to_paragraphs_node,
+    }
 
-    for block in blocks:
+    return(
+        parentnode.ParentNode(
+            datatypes.BlockTypes.CONETNT_TAG.value,
+            list(
+                map(
+                    lambda block : block_func_dict[block_to_block_type(block)](block),
+                    markdown_to_blocks(markdown)
+                )
+            ),
+            None
+        )
+    )
 
-        block_type = block_to_block_type(block)
 
+def text_to_children(text : str):
 
+    text_split = list(filter(lambda txt : txt != "", text.split("\n")))
+
+    if not text_split:
+        text_split = [text]
+    
+    text_nodes = functools.reduce(
+        lambda text_nodes, txt : text_nodes + inline.text_to_textnode(txt) ,
+        text_split, []
+        )
+
+    return(
+        list(
+            map(
+                textnode.text_to_html_node,
+                text_nodes
+                )
+            )
+        )
 
     
+def block_to_heading_node(block: str):
+    
+    hash_count = block.count(datatypes.BlockTypes.HEADING.value)
+    return(
+        leafnode.LeafNode(
+            f"{datatypes.BlockTypes.HEADING_TAG.value}{hash_count}",
+            block.strip(datatypes.BlockTypes.HEADING.value).lstrip(" ").rstrip(" "),
+            None
+            ) 
+    )
+   
+def block_to_unordered_list_node(block: str):
+
+    text_split = block.split("\n")
+    strp_block = functools.reduce(lambda text_so_far, txt : text_so_far + "{}\n".format(
+        txt.lstrip(
+            datatypes.BlockTypes.UNORDERED_LIST.value[0]).lstrip(
+                datatypes.BlockTypes.UNORDERED_LIST.value[1].rstrip(" "))),
+                  text_split, "")
+
+    child_nodes = text_to_children(strp_block)
+    
+    [child.set_tag(datatypes.BlockTypes.UNORDERED_LIST_TAG.value[1]) for child in child_nodes]
     
 
-        
-        
+    return(parentnode.ParentNode(
+        datatypes.BlockTypes.UNORDERED_LIST_TAG.value[0],
+        child_nodes,
+        None
+        )
 
+
+    )
+
+def block_to_ordered_list_node(block: str):
+
+    child_nodes = text_to_children(block.lstrip(
+            datatypes.BlockTypes.ORDERED_LIST.value))
+ 
+    [child.set_tag(datatypes.BlockTypes.ORDERED_LIST_TAG.value[1]) for child in child_nodes]
+    
+    return(parentnode.ParentNode(
+        datatypes.BlockTypes.ORDERED_LIST_TAG.value[0],
+        child_nodes,
+        None
+        )
+
+    )
+
+def  block_to_quoute_node(block: str):
+  
+    return(
+        parentnode.ParentNode(
+            datatypes.BlockTypes.QOUTE_TAG.value,
+            text_to_children(block.strip(datatypes.BlockTypes.QOUTE.value)),
+            None
+            )
+    )
+
+def block_to_code_node(block: str):
+    
+    
+    return(
+        parentnode.ParentNode(
+            datatypes.BlockTypes.PREFORMAT_TAG.value,
+            text_to_children(block),
+            None    
+        )
+    )
+    
+
+def block_to_paragraphs_node(block: str):
+       
+     return( 
+        parentnode.ParentNode(
+            datatypes.BlockTypes.PARAGRAPH_TAG.value,
+            text_to_children(block),
+            None
+        ) 
+    )    
+    

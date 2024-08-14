@@ -1,4 +1,4 @@
-
+    
 class HTMLNode():
     def __init__(self, tag=None, value=None, children=None, props=None):
         self.tag = tag
@@ -23,6 +23,9 @@ class HTMLNode():
     def end_tag(self):
         return(f"</{self.tag}>")
 
+    def set_tag(self, val):
+        self.tag = val
+
     def to_html(self):
         raise NotImplementedError()
     
@@ -34,5 +37,5 @@ class HTMLNode():
     
     def __repr__(self):
         return(
-            f"HTMLNode({self.tag}, {self.value}, {self.children, self.props})"
+            f"HTMLNode({self.tag}, {self.value}, {self.children, self.props})\n"
             )

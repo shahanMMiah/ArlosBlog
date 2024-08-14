@@ -1,13 +1,5 @@
-from enum import Enum
+from .. import datatypes
 from .leafnode import LeafNode
-
-class TextTypes(Enum):
-    text_type_text = "text"
-    text_type_bold = "bold"
-    text_type_italic = "italic"
-    text_type_code = "code"
-    text_type_link = "link"
-    text_type_image = "image"
 
     
 class TextNode():
@@ -29,43 +21,43 @@ class TextNode():
             )
 
 def text_to_html_node(text_node):
-   
+      
     match(text_node.text_type):
-        case(TextTypes.text_type_text.value):
+        case(datatypes.TextTypes.TEXT_NAME.value):
             return(LeafNode(
                 tag=None, 
                 value=text_node.text, 
                 props=None))
-        case(TextTypes.text_type_bold.value):
+        case(datatypes.TextTypes.BOLD_NAME.value):
             return(
             LeafNode(
-                tag="b", 
+                tag=datatypes.InlineTypes.BOLD_TAG.value, 
                 value=text_node.text, 
                 props=None))
-        case(TextTypes.text_type_italic.value):
+        case(datatypes.TextTypes.ITALIC_NAME.value):
             return(
             LeafNode(
-                tag="i", 
+                tag=datatypes.InlineTypes.ITALIC_TAG.value, 
                 value=text_node.text, 
                 props=None))
-        case(TextTypes.text_type_code.value):
+        case(datatypes.TextTypes.CODE_NAME.value):
             return(
             LeafNode(
-                tag="code",
+                tag=datatypes.TextTypes.CODE_NAME.value,
                 value=text_node.text, 
                 props=None))
 
-        case(TextTypes.text_type_link.value):
+        case(datatypes.TextTypes.LINK_NAME.value):
             return(
             LeafNode(
-                tag="a", 
+                tag=datatypes.InlineTypes.LINK_TAG.value, 
                 value=text_node.text, 
                 props={"href":text_node.url}))
 
-        case(TextTypes.text_type_image.value):
+        case(datatypes.TextTypes.IMAGE_NAME.value):
             return(
             LeafNode(
-                tag="img", 
+                tag=datatypes.InlineTypes.IMAGE_TAG.value, 
                 value="anchor text", 
                 props={
                     "src":text_node.url, 

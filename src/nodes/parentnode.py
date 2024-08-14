@@ -25,7 +25,7 @@ class ParentNode(HTMLNode):
                     output_str=output_str)
             else:
                 output_str += childs.to_html()
-            
+             
         output_str+= self.end_tag                    
         
         return(output_str)
