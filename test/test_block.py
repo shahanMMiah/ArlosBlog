@@ -121,8 +121,20 @@ class TestBlock(unittest.TestCase):
 
         test_node_tree = block.markdown_to_hmtl_node(test_str)
 
-        LOG.info(f"test nodes is {test_node_tree.to_html()}")
+        LOG.info(f"test block to hmtl nodes is {test_node_tree.to_html()}")
         self.assertIsInstance(test_node_tree.to_html(), str) 
+
+        test_str_2 = """ * I really
+            * hate writing
+            * in raw html
+        """
+        to_hmtl = block.markdown_to_hmtl_node(test_str_2)
+        hmtl_str =  """<div><ul><li> I really</li><li> hate writing</li><li> in raw html</li></ul></div>"""
+        
+        LOG.info(f"test block to hmtl 2 nodes is {to_hmtl.to_html()}")
+        self.assertEqual(to_hmtl.to_html(),hmtl_str)
+        
+        
 
 
 

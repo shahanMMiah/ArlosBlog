@@ -2,6 +2,8 @@ import functools
 from ..nodes import parentnode,leafnode,textnode
 from .. import datatypes
 from . import inline
+import re
+
 
     
 # check funcs
@@ -171,8 +173,14 @@ def block_to_unordered_list_node(block: str):
 
 def block_to_ordered_list_node(block: str):
 
-    child_nodes = text_to_children(block.lstrip(
-            datatypes.BlockTypes.ORDERED_LIST.value))
+    
+    nums = re.findall(r"\d.", block)
+    strip_block =  block.lstrip(datatypes.BlockTypes.ORDERED_LIST.value).strip("\n")
+    for num in nums:
+        if num in strip_block:
+            strip_block = strip_block.replace(num,"")
+    
+    child_nodes = text_to_children(strip_block)
  
     [child.set_tag(datatypes.BlockTypes.ORDERED_LIST_TAG.value[1]) for child in child_nodes]
     
