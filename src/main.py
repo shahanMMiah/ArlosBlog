@@ -1,7 +1,8 @@
 import os
 import shutil
 import logging
-
+from .markdown import block
+from . import webpage
 
 
 LOG = logging.getLogger(__name__)
@@ -50,9 +51,16 @@ def copy_src_dir(src_dir,dst_dir):
         add_file_dir(src)
         
 
-        
 def main():        
+    
+    LOG.info("re copying static content")
     copy_static_content()
+
+    webpage.generate_page(
+        "/home/smia/ArlosBlog/content/index.md",
+        "/home/smia/ArlosBlog/template.html",
+        "/home/smia/ArlosBlog/public/index.html")
+
 
 if __name__ == "__main__":
     main()

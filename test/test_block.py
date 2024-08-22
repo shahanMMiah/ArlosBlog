@@ -110,7 +110,7 @@ class TestBlock(unittest.TestCase):
 
         > this is a quote block   
 
-        * This is the first list item in a list block    
+        * This is the first list item *in a list block*    
         * This is a list item    
         * This is another list item
 
@@ -125,14 +125,25 @@ class TestBlock(unittest.TestCase):
         self.assertIsInstance(test_node_tree.to_html(), str) 
 
         test_str_2 = """ * I really
-            * hate writing
+            * hate writing *italic font*
             * in raw html
         """
         to_hmtl = block.markdown_to_hmtl_node(test_str_2)
-        hmtl_str =  """<div><ul><li> I really</li><li> hate writing</li><li> in raw html</li></ul></div>"""
+        hmtl_str =  """<div><ul><li>I really</li><li>hate writing<i>italic font</i></li><li>in raw html</li></ul></div>"""
         
         LOG.info(f"test block to hmtl 2 nodes is {to_hmtl.to_html()}")
         self.assertEqual(to_hmtl.to_html(),hmtl_str)
+
+        test_str_3 = """ 1. I really
+            2. hate writing *italic font*
+            3. in raw html
+        """
+        to_hmtl3 = block.markdown_to_hmtl_node(test_str_3)
+        hmt3_str =  """<div><ol><li>I really</li><li>hate writing<i>italic font</i></li><li>in raw html</li></ol></div>"""
+        
+        LOG.info(f"test block to hmtl 3 nodes is {to_hmtl3.to_html()}")
+        self.assertEqual(to_hmtl3.to_html(),hmt3_str)
+        
         
         
 

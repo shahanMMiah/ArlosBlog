@@ -1,4 +1,5 @@
 from .htmlnode import HTMLNode
+from .. import datatypes
 
 
 class ParentNode(HTMLNode):
@@ -12,12 +13,13 @@ class ParentNode(HTMLNode):
         )
     def to_html(self, output_str = ""):
  
-        output_str += self.start_tag
-
         if not self.tag:
             raise ValueError(f"{self.__repr__()} has no tag")
         if not self.children:
              raise ValueError(f"{self.__repr__()} has no children")
+
+        if self.tag != datatypes.TextTypes.NULL_NAME.value:
+            output_str += self.start_tag
 
         for childs in self.children:
             if isinstance(childs, ParentNode):
@@ -25,8 +27,9 @@ class ParentNode(HTMLNode):
                     output_str=output_str)
             else:
                 output_str += childs.to_html()
-             
-        output_str+= self.end_tag                    
+
+        if self.tag != datatypes.TextTypes.NULL_NAME.value:     
+            output_str+= self.end_tag                    
         
         return(output_str)
     

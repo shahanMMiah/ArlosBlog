@@ -1,5 +1,5 @@
 import functools
-from ..nodes import parentnode,leafnode,textnode
+from .. nodes import parentnode ,leafnode, textnode
 from .. import datatypes
 from . import inline
 import re
@@ -16,7 +16,7 @@ def heading_check(block:str):
     return(block)
   
 def code_check( block:str):
-    if block.startswith(f"{datatypes.BlockTypes.CODE.value} "):
+    if block.startswith(f"{datatypes.BlockTypes.CODE.value}"):
         return(datatypes.BlockTypes.CODE_NAME.value)
     return(block)
 
@@ -55,19 +55,31 @@ def ordered_list_check(block:str):
 
 def markdown_to_blocks(markdown : str):
 
+    delims_types = [
+        datatypes.InlineTypes.BOLD.value,
+        datatypes.InlineTypes.ITALIC.value,
+        datatypes.InlineTypes.CODE.value
+        ]
+    
     splits = markdown.split("\n")
     sentences = []
     current_sentence = str()
     for num, sentence in enumerate(splits):
+        add_sent = sentence.lstrip(' ').rstrip(' ')
         
-        if not sentence and current_sentence or num == len(splits)-1:
+        if num == len(splits)-1:    
+            current_sentence += add_sent
+            sentences.append(current_sentence)
+
+        elif not sentence and current_sentence:
             sentences.append(current_sentence)
             current_sentence = str()
         else:
-            add_sent = sentence.lstrip(' ').rstrip(' ')
-            if len(current_sentence) > 0:
+            if len(current_sentence) > 0 and not add_sent in delims_types:
                 add_sent = f"\n{add_sent}"
             current_sentence += add_sent
+            
+
     return(sentences)
 
 def block_to_block_type(block : str):
@@ -117,16 +129,17 @@ def markdown_to_hmtl_node(markdown:str):
 
 def text_to_children(text : str):
 
+        
     text_split = list(filter(lambda txt : txt != "", text.split("\n")))
 
-    if not text_split:
+    if not text_split or block_to_block_type(text) == datatypes.BlockTypes.CODE_NAME.value:
         text_split = [text]
-    
+
     text_nodes = functools.reduce(
         lambda text_nodes, txt : text_nodes + inline.text_to_textnode(txt) ,
         text_split, []
         )
-
+    
     return(
         list(
             map(
@@ -149,22 +162,33 @@ def block_to_heading_node(block: str):
     )
    
 def block_to_unordered_list_node(block: str):
-
+    
     text_split = block.split("\n")
-    strp_block = functools.reduce(lambda text_so_far, txt : text_so_far + "{}\n".format(
-        txt.lstrip(
+
+    node_list = []
+    for text in text_split:
+        strip_text = text.lstrip(
             datatypes.BlockTypes.UNORDERED_LIST.value[0]).lstrip(
-                datatypes.BlockTypes.UNORDERED_LIST.value[1].rstrip(" "))),
-                  text_split, "")
-
-    child_nodes = text_to_children(strp_block)
+                datatypes.BlockTypes.UNORDERED_LIST.value[1]).rstrip(" ")
+        child_nodes = text_to_children(strip_text)
+       
+        if len(child_nodes) > 1:
+            child_nodes = parentnode.ParentNode(
+                datatypes.TextTypes.NULL_NAME.value,
+                child_nodes,
+                None
+                )
+            
+        else:
+            child_nodes = child_nodes[0]
     
-    [child.set_tag(datatypes.BlockTypes.UNORDERED_LIST_TAG.value[1]) for child in child_nodes]
-    
-
+        child_nodes.set_tag(datatypes.BlockTypes.UNORDERED_LIST_TAG.value[1])
+        node_list.append(child_nodes)
+             
+            
     return(parentnode.ParentNode(
         datatypes.BlockTypes.UNORDERED_LIST_TAG.value[0],
-        child_nodes,
+        node_list,
         None
         )
 
@@ -175,18 +199,39 @@ def block_to_ordered_list_node(block: str):
 
     
     nums = re.findall(r"\d.", block)
-    strip_block =  block.lstrip(datatypes.BlockTypes.ORDERED_LIST.value).strip("\n")
-    for num in nums:
-        if num in strip_block:
-            strip_block = strip_block.replace(num,"")
     
-    child_nodes = text_to_children(strip_block)
- 
-    [child.set_tag(datatypes.BlockTypes.ORDERED_LIST_TAG.value[1]) for child in child_nodes]
-    
+    strip_block = block.split("\n")
+
+    node_list = []
+    for text in strip_block:
+        
+        
+        if not text:
+            continue
+
+        un_num = text
+        for num in nums:
+            if num in text:
+                un_num = text.replace(num,"")
+        
+        child_nodes = text_to_children(un_num)
+
+        if len(child_nodes) > 1:
+            child_nodes = parentnode.ParentNode(
+                datatypes.TextTypes.NULL_NAME.value,
+                child_nodes,
+                None
+                )
+            
+        else:
+            child_nodes = child_nodes[0]
+
+        child_nodes.set_tag(datatypes.BlockTypes.ORDERED_LIST_TAG.value[1])
+        node_list.append(child_nodes)
+
     return(parentnode.ParentNode(
         datatypes.BlockTypes.ORDERED_LIST_TAG.value[0],
-        child_nodes,
+        node_list,
         None
         )
 

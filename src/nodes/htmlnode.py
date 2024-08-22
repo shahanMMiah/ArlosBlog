@@ -32,10 +32,10 @@ class HTMLNode():
     def props_to_html(self):
         html_str = ''
         for key,val in self.props.items():
-            html_str += f' <{key}> ="{val}"'  
+            html_str += f'<{key}> ="{val}"'  
         return(html_str)
     
     def __repr__(self):
         return(
-            f"HTMLNode({self.tag}, {self.value}, {self.children, self.props})\n"
+            f"HTMLNode({self.tag}, {self.value}, {self.children, self.props})"
             )

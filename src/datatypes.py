@@ -18,7 +18,7 @@ class BlockTypes(Enum):
     PARAGRAPH_TAG = "p"
     UNORDERED_LIST_TAG = ["ul","li"]
     ORDERED_LIST_TAG = ["ol","li"]
-    QOUTE_TAG = "blockqoute"
+    QOUTE_TAG = "blockquote"
     CODE_TAG = "code"
 
     PREFORMAT_TAG = "pre"
@@ -43,6 +43,7 @@ class TextTypes(Enum):
     CODE_NAME = "code"
     LINK_NAME = "link"
     IMAGE_NAME = "image"
+    NULL_NAME = "null"
 
     
     

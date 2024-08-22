@@ -62,7 +62,7 @@ def split_nodes_delimiter(old_nodes: textnode.TextNode,delimiter: str,text_type:
                 continue
              
              elif delims_found % 2 != 0:
-                 raise RuntimeError("no closing delimiter amount")
+                 raise RuntimeError(f"no closing delimiter{delimiter} of amount {delims_found} in {old_node.text}")
              
              for num, split in enumerate(splits):
                 
