@@ -169,7 +169,7 @@ def block_to_unordered_list_node(block: str):
     for text in text_split:
         strip_text = text.lstrip(
             datatypes.BlockTypes.UNORDERED_LIST.value[0]).lstrip(
-                datatypes.BlockTypes.UNORDERED_LIST.value[1]).rstrip(" ")
+                datatypes.BlockTypes.UNORDERED_LIST.value[1]).lstrip(" ").rstrip(" ")
         child_nodes = text_to_children(strip_text)
        
         if len(child_nodes) > 1:
@@ -204,8 +204,7 @@ def block_to_ordered_list_node(block: str):
 
     node_list = []
     for text in strip_block:
-        
-        
+           
         if not text:
             continue
 
@@ -215,6 +214,12 @@ def block_to_ordered_list_node(block: str):
                 un_num = text.replace(num,"")
         
         child_nodes = text_to_children(un_num)
+        for child in child_nodes:
+            
+            striped = child.value.lstrip(" ")
+            child.set_value(striped)
+           
+            
 
         if len(child_nodes) > 1:
             child_nodes = parentnode.ParentNode(
@@ -242,7 +247,7 @@ def  block_to_quoute_node(block: str):
     return(
         parentnode.ParentNode(
             datatypes.BlockTypes.QOUTE_TAG.value,
-            text_to_children(block.strip(datatypes.BlockTypes.QOUTE.value)),
+            text_to_children(block.strip(datatypes.BlockTypes.QOUTE.value).lstrip(" ").rstrip(" ")),
             None
             )
     )

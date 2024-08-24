@@ -2,7 +2,7 @@ from enum import Enum
 
 class BlockTypes(Enum):
     HEADING = "#"
-    CODE = "```"
+    CODE = "`"
     QOUTE = ">"
     UNORDERED_LIST = ["*","-"]
     ORDERED_LIST = "."
@@ -33,7 +33,7 @@ class InlineTypes(Enum):
 
     BOLD = "**"
     ITALIC = "*"
-    CODE = "```"
+    CODE = "`"
 
 
 class TextTypes(Enum):

@@ -56,11 +56,16 @@ def main():
     LOG.info("re copying static content")
     copy_static_content()
 
-    webpage.generate_page(
+    """webpage.generate_page(
         "/home/smia/ArlosBlog/content/index.md",
         "/home/smia/ArlosBlog/template.html",
         "/home/smia/ArlosBlog/public/index.html")
-
+    """
+    webpage.generate_pages_recursive(
+        "/home/smia/ArlosBlog/content",
+        "/home/smia/ArlosBlog/template.html",
+        "/home/smia/ArlosBlog/public")
+    
 
 if __name__ == "__main__":
     main()

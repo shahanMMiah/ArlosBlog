@@ -26,6 +26,9 @@ class HTMLNode():
     def set_tag(self, val):
         self.tag = val
 
+    def set_value(self, val):
+        self.value = val
+        
     def to_html(self):
         raise NotImplementedError()
     

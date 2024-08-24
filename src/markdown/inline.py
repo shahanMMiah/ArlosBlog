@@ -15,8 +15,12 @@ def extract_markdown_element(text:str):
  
     def extract_element(check_func, elements):
         
+        if not elements[0] or not elements[1]:
+            return(None)
+        
         check_func(elements[0],elements[1])
-       
+        
+
         return(
             list( map(lambda num, e=elements : (e[0][num],e[1][num]), range(len(elements[0]))))
         )
@@ -32,6 +36,7 @@ def extract_markdown_images(text : str):
 
     pattern_finder, extracter = extract_markdown_element(text)
     elements = pattern_finder([r"!+\[(.*?)\]",r"\((.*?)\)"])
+    
     return(extracter(check_func, elements))
 
     
@@ -66,7 +71,7 @@ def split_nodes_delimiter(old_nodes: textnode.TextNode,delimiter: str,text_type:
              
              for num, split in enumerate(splits):
                 
-                if num != len(splits) -1 and num % 2 != 0:
+                if num != len(splits) -1 and num % 2 != 0 and len(split) > 0:
                     textNodes.append(
                         textnode.TextNode(
                             split,
@@ -169,6 +174,7 @@ def text_to_textnode(text : str):
         datatypes.InlineTypes.BOLD.value,
         datatypes.InlineTypes.ITALIC.value,
         datatypes.InlineTypes.CODE.value
+
     ]
     text_types = [
         datatypes.TextTypes.BOLD_NAME.value,
@@ -177,9 +183,11 @@ def text_to_textnode(text : str):
     ]
     
     nodes = [textnode.TextNode(text,datatypes.TextTypes.TEXT_NAME.value,None)]
+    
     for num, char in enumerate(text_chars):
     
         nodes = split_nodes_delimiter(nodes, char, text_types[num])
+
     
     nodes = split_nodes_images(nodes)
     nodes = split_nodes_links(nodes)

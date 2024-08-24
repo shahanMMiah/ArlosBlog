@@ -27,6 +27,7 @@ class ParentNode(HTMLNode):
                     output_str=output_str)
             else:
                 output_str += childs.to_html()
+               
 
         if self.tag != datatypes.TextTypes.NULL_NAME.value:     
             output_str+= self.end_tag                    

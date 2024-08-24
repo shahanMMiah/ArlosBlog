@@ -1,6 +1,7 @@
 from .markdown import block
 import locale
 import logging
+import os
 
 LOG = logging.getLogger(__name__)
 logging.basicConfig(level = logging.INFO)
@@ -56,5 +57,25 @@ def generate_page(
     with open(dest_path, 'w', encoding = locale.getpreferredencoding()) as dest_obj:
         
         dest_obj.write(template_html)  
+
+def generate_pages_recursive(
+        dir_path_content, 
+        template_path, 
+        dest_dir_path):
+    
+    for content in os.listdir(dir_path_content):
+        content_path = os.path.join(dir_path_content,content)
+        if os.path.isdir(content_path):
+            dest_path = os.path.join(dest_dir_path,content)
+            os.mkdir(dest_path)
+            generate_pages_recursive(content_path,template_path,dest_path)
+        
+        elif content_path.endswith(".md") and os.path.isfile(content_path):
+            
+            dest_path = os.path.join(dest_dir_path,content.replace(".md",".html"))
+            generate_page(content_path, template_path, dest_path)
+
+
+
 
     

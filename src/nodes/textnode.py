@@ -32,19 +32,19 @@ def text_to_html_node(text_node):
             return(
             LeafNode(
                 tag=datatypes.InlineTypes.BOLD_TAG.value, 
-                value=text_node.text, 
+                value=text_node.text.lstrip(" ").rstrip(" "), 
                 props=None))
         case(datatypes.TextTypes.ITALIC_NAME.value):
             return(
             LeafNode(
                 tag=datatypes.InlineTypes.ITALIC_TAG.value, 
-                value=text_node.text, 
+                value=text_node.text.lstrip(" ").rstrip(" "), 
                 props=None))
         case(datatypes.TextTypes.CODE_NAME.value):
             return(
             LeafNode(
                 tag=datatypes.TextTypes.CODE_NAME.value,
-                value=text_node.text, 
+                value=text_node.text.lstrip(" ").rstrip(" "), 
                 props=None))
 
         case(datatypes.TextTypes.LINK_NAME.value):
