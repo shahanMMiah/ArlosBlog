@@ -1,0 +1,101 @@
+body {
+    background-image: url("/images/carrots3.jpg");
+    background-color: #cccccc;
+    color: #6659a1;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    line-height: 1.5;
+    margin: 0;
+    padding: 20px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+b {
+    color: #77d525;
+    font-weight: 900;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #44cb64;
+    margin-top: 24px;
+    margin-bottom: 16px;
+}
+
+h1 {
+    font-size: 4em;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+h3 {
+    font-size: 1.17em;
+}
+
+h4,
+h5,
+h6 {
+    font-size: 1em;
+}
+
+a {
+    color: #981e90;
+    text-decoration: none;
+    font-size: 1.5em;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul{color: #3936e4;}
+
+ol {
+    padding-left: 20px;
+    color: #f83d37;
+    
+}
+
+code {
+    background-color: #b44040;
+    border-radius: 6px;
+    color: #e5e481;
+    padding: 0.2em 0.4em;
+    font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+pre code {
+    padding: 0;
+}
+
+
+pre {
+    background-color: #242424;
+    border-radius: 6px;
+    padding: 0.2em 0.4em;
+}
+
+blockquote {
+    background-color: #64405f;
+    border-left: 4px solid #d7cf65;
+    padding-left: 2em;
+    margin-left: 0;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-right: 0.5em;
+    color: #f7f069;
+}
+
+img {
+    max-width: 30%;
+    height: auto;
+    border-radius: 6px;
+}
+

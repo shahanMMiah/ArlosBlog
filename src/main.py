@@ -11,7 +11,7 @@ LOG = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
-def copy_static_content(static="static",public="public"):
+def copy_static_content(static="static", public="public"):
     """copy content from static folder to public"""
 
     base_dir = os.path.dirname(os.path.dirname(__file__))
@@ -19,7 +19,7 @@ def copy_static_content(static="static",public="public"):
     dst_dir = os.path.join(base_dir, public)
 
     if os.path.exists(dst_dir):
-        LOG.info("found %s re copying from %s",dst_dir,src_dir)
+        LOG.info("found %s re copying from %s", dst_dir, src_dir)
         shutil.rmtree(dst_dir)
 
     os.mkdir(dst_dir)
@@ -44,7 +44,7 @@ def copy_src_dir(src_dir, dst_dir):
         dst_file = os.path.join(dst_dir, files)
         if os.path.isdir(src_file):
 
-            LOG.info("copying dir %s",files)
+            LOG.info("copying dir %s", files)
 
             os.mkdir(dst_file)
 
@@ -69,12 +69,21 @@ def main():
     """main function to generate hmtl pages"""
 
     LOG.info("re copying static content")
+
     copy_static_content()
 
     webpage.generate_pages_recursive(
-        os.path.join(PROJECT_DIR,"content"),
-        os.path.join(PROJECT_DIR,"template.html"),
-        os.path.join(PROJECT_DIR,"public")
+        os.path.join(PROJECT_DIR, "content"),
+        os.path.join(PROJECT_DIR, "template.html"),
+        os.path.join(PROJECT_DIR, "public"),
+    )
+
+    copy_static_content(static="Arlo_static", public="Arlo_public")
+
+    webpage.generate_pages_recursive(
+        os.path.join(PROJECT_DIR, "Arlo_content"),
+        os.path.join(PROJECT_DIR, "template.html"),
+        os.path.join(PROJECT_DIR, "Arlo_public"),
     )
 
 

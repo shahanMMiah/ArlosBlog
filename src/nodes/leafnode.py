@@ -1,4 +1,4 @@
-""" Leaf HMTL node class"""
+""" Leaf HMTL node class, HTML type with valu and no children."""
 
 from .htmlnode import HTMLNode
 

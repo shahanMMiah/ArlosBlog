@@ -229,13 +229,9 @@ def block_to_unordered_list_node(block: str):
         )
         child_nodes = text_to_children(strip_text)
 
-        if len(child_nodes) > 1:
-            child_nodes = parentnode.ParentNode(
-                datatypes.TextTypes.NULL_NAME.value, child_nodes, None
-            )
-
-        else:
-            child_nodes = child_nodes[0]
+        child_nodes = parentnode.ParentNode(
+            datatypes.TextTypes.NULL_NAME.value, child_nodes, None
+        )
 
         child_nodes.set_tag(datatypes.BlockTypes.UNORDERED_LIST_TAG.value[1])
         node_list.append(child_nodes)
